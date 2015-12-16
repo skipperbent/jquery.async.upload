@@ -17,7 +17,7 @@ asyncUpload.prototype={
 		onFileChange: null,
 		onLoad: null,
 		onComplete: null,
-		onError:null
+		onError: null
 	},
 	construct: function(options) {
 		this.options=$.extend(this.options, options);
