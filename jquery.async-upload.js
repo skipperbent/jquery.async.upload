@@ -25,17 +25,17 @@ asyncUpload.prototype={
 		var o=this.options;
 
 		var errors=new Array();
-		if(o.postUrl==null) {
+		if(o.postUrl === null) {
 			errors.push('No postUrl defined');
 		}
-		if(o.form==null || typeof(o.form)=="undefined"){
+		if(o.form === null || typeof(o.form) === "undefined"){
 			errors.push("The form of 1st parameter does not exists.");
 		}
-		if(o.onComplete == null){
+		if(o.onComplete === null){
 			errors.push("onComplete event must be defined!");
 		}
 		if(errors.length>0){
-			if(o.onError!=null) {
+			if(o.onError !== null) {
 				o.onError(errors);
 			} else {
 				throw "Following errors occoured:\n\n" + errors.join('\n');
@@ -82,7 +82,7 @@ asyncUpload.prototype={
 jQuery.fn.asyncUpload = function (options) {
 	var self=this;
 	var form = self.parents('form:first');
-	if(form.length == 0) {
+	if(form.length === 0) {
 		throw 'Cannot find form!';
 	}
 	var s=$.extend(options, { 'form': form });
