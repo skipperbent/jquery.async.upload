@@ -1,8 +1,7 @@
 /**
  * Pecee AsyncUpload for jQuery
- * By: Simon Sessingø
  * @version 0.5
- * @author Pecee
+ * @author Simon Sessingø
  * @website http://www.pecee.dk
  */
 function asyncUpload(options) {
@@ -25,22 +24,27 @@ asyncUpload.prototype={
 		var o=this.options;
 
 		var errors=new Array();
+		
 		if(o.postUrl === null) {
 			errors.push('No postUrl defined');
 		}
+		
 		if(o.form === null || typeof(o.form) === "undefined"){
 			errors.push("The form of 1st parameter does not exists.");
 		}
+		
 		if(o.onComplete === null){
 			errors.push("onComplete event must be defined!");
 		}
-		if(errors.length>0){
+		
+		if(errors.length > 0){
 			if(o.onError !== null) {
 				o.onError(errors);
 			} else {
 				throw "Following errors occoured:\n\n" + errors.join('\n');
 			}
 		}
+		
 		var iframe='<iframe id="ajax-temp" name="ajax-temp" width="0" height="0" border="0" style="width:0;height:0;border:none;"></iframe>';
 		o.form.append(iframe);
 		var f=window.frames['ajax-temp'];
@@ -51,14 +55,18 @@ asyncUpload.prototype={
 		this.addAttribute('method', 'post');
 		this.addAttribute('enctype', 'multipart/form-data');
 		this.addAttribute('encoding', 'multipart/form-data');
-		if(o.onLoad!=null) {
+		
+		if(o.onLoad !== null) {
 			o.onLoad();
 		}
+		
 		o.form.submit();
+		
 		$('#ajax-temp').load(function() {
 			o.onComplete($(this).contents().find('body').html());
 			$(this).remove();
 		});
+		
 		this.restoreAttributes();
 	},
 	addAttribute: function(name, value) {
