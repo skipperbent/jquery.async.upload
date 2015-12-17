@@ -1,6 +1,6 @@
 /**
  * Pecee AsyncUpload for jQuery
- * @version 0.5
+ * @version 0.6
  * @author Simon Sessingø
  * @website http://www.pecee.dk
  */
@@ -19,11 +19,11 @@ asyncUpload.prototype={
 		onError: null
 	},
 	construct: function(options) {
-		this.options=$.extend(this.options, options);
-		this.attr=[];
-		var o=this.options;
+		this.options = $.extend(this.options, options);
+		this.attr = [];
+		var o = this.options;
 
-		var errors=new Array();
+		var errors = new Array();
 		
 		if(o.postUrl === null) {
 			errors.push('No postUrl defined');
@@ -45,10 +45,10 @@ asyncUpload.prototype={
 			}
 		}
 		
-		var iframe='<iframe id="ajax-temp" name="ajax-temp" width="0" height="0" border="0" style="width:0;height:0;border:none;"></iframe>';
+		var iframe = '<iframe id="ajax-temp" name="ajax-temp" width="0" height="0" border="0" style="width:0;height:0;border:none;"></iframe>';
 		o.form.append(iframe);
-		var f=window.frames['ajax-temp'];
-		f.name="ajax-temp";
+		var f = window.frames['ajax-temp'];
+		f.name = "ajax-temp";
 
 		this.addAttribute('target', 'ajax-temp');
 		this.addAttribute('action', o.postUrl);
@@ -63,7 +63,10 @@ asyncUpload.prototype={
 		o.form.submit();
 		
 		$('#ajax-temp').load(function() {
-			o.onComplete($(this).contents().find('body').html());
+			var response = $(this).contents().find('body').html();
+			response = response.substr(response.indexOf('{'));
+			response = response.substr(0, response.lastIndexOf('}')+1);
+			o.onComplete(JSON.parse(response));
 			$(this).remove();
 		});
 		
@@ -75,7 +78,7 @@ asyncUpload.prototype={
 		this.options.form.attr(name, value);
 	},
 	restoreAttributes: function() {
-		for(var i=0;i<this.attr.length;i++) {
+		for(var i = 0; i < this.attr.length; i++) {
 			var arr=this.attr[i];
 			if(arr[1] == null) {
 				this.options.form.removeAttr(arr[0]);
@@ -88,16 +91,19 @@ asyncUpload.prototype={
 };
 
 jQuery.fn.asyncUpload = function (options) {
-	var self=this;
+	var self = this;
 	var form = self.parents('form:first');
 	if(form.length === 0) {
 		throw 'Cannot find form!';
 	}
-	var s=$.extend(options, { 'form': form });
+
+	var options = $.extend(options, { 'form': form });
+
 	$(this).bind('change', function() {
-		if(s.onFileChange != null) {
-			s.onFileChange(this,self,o);
+		var upload = new asyncUpload(options);
+		if(options.onFileChange != null) {
+			options.onFileChange(self.options, upload);
 		}
-		return new asyncUpload(s);
+		return upload;
 	});
 };
