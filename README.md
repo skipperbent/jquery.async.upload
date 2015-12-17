@@ -22,6 +22,7 @@ Simple, lightweight jQuery plugin that enables async upload.
       onFileChange: function() {
         // Triggers when file has been chosen or changed
       }
+    });
   });
 </script>
 ```
