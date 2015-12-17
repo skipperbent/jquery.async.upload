@@ -1,0 +1,23 @@
+{
+  "name": "jquery.asyncupload",
+  "version": "1.0",
+  "homepage": "https://github.com/skipperbent/jquery.async.upload",
+  "authors": [
+    "Simon Sessingø <simon.sessingoe@gmail.com>"
+  ],
+  "description": "Simple, lightweight jQuery plugin that enables async upload of files.",
+  "main": "jquery.async-upload.js",
+  "keywords": [
+    "jquery",
+    "async",
+    "upload"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
