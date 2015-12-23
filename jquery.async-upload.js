@@ -1,6 +1,6 @@
 /**
  * Pecee AsyncUpload for jQuery
- * @version 0.6
+ * @version 0.7
  * @author Simon Sessingø
  * @website http://www.pecee.dk
  */
@@ -24,19 +24,19 @@ asyncUpload.prototype={
 		var o = this.options;
 
 		var errors = new Array();
-		
+
 		if(o.postUrl === null) {
 			errors.push('No postUrl defined');
 		}
-		
+
 		if(o.form === null || typeof(o.form) === "undefined"){
 			errors.push("The form of 1st parameter does not exists.");
 		}
-		
+
 		if(o.onComplete === null){
 			errors.push("onComplete event must be defined!");
 		}
-		
+
 		if(errors.length > 0){
 			if(o.onError !== null) {
 				o.onError(errors);
@@ -44,7 +44,7 @@ asyncUpload.prototype={
 				throw "Following errors occoured:\n\n" + errors.join('\n');
 			}
 		}
-		
+
 		var iframe = '<iframe id="ajax-temp" name="ajax-temp" width="0" height="0" border="0" style="width:0;height:0;border:none;"></iframe>';
 		o.form.append(iframe);
 		var f = window.frames['ajax-temp'];
@@ -55,13 +55,13 @@ asyncUpload.prototype={
 		this.addAttribute('method', 'post');
 		this.addAttribute('enctype', 'multipart/form-data');
 		this.addAttribute('encoding', 'multipart/form-data');
-		
+
 		if(o.onLoad !== null) {
 			o.onLoad();
 		}
-		
+
 		o.form.submit();
-		
+
 		$('#ajax-temp').load(function() {
 			var response = $(this).contents().find('body').html();
 			response = response.substr(response.indexOf('{'));
@@ -69,7 +69,7 @@ asyncUpload.prototype={
 			o.onComplete(JSON.parse(response));
 			$(this).remove();
 		});
-		
+
 		this.restoreAttributes();
 	},
 	addAttribute: function(name, value) {
@@ -91,19 +91,21 @@ asyncUpload.prototype={
 };
 
 jQuery.fn.asyncUpload = function (options) {
-	var self = this;
-	var form = self.parents('form:first');
-	if(form.length === 0) {
-		throw 'Cannot find form!';
-	}
-
-	var options = $.extend(options, { 'form': form });
-
-	$(this).bind('change', function() {
-		var upload = new asyncUpload(options);
-		if(options.onFileChange != null) {
-			options.onFileChange(self.options, upload);
+	$(this).each(function() {
+		var self = $(this);
+		var form = self.parents('form:first');
+		if(form.length === 0) {
+			throw 'Cannot find form!';
 		}
-		return upload;
+
+		var o = $.extend(options, { 'form': form });
+
+		$(this).bind('change', function() {
+			var upload = new asyncUpload(o);
+			if(o.onFileChange != null) {
+				o.onFileChange(self.o, upload);
+			}
+			return upload;
+		});
 	});
 };
