@@ -1,6 +1,6 @@
 /**
  * Pecee AsyncUpload for jQuery
- * @version 0.7
+ * @version 1.0.3
  * @author Simon Sessingø
  * @website http://www.pecee.dk
  */
@@ -12,6 +12,7 @@ asyncUpload.prototype={
 	attr: [],
 	options: {
 		form: '',
+		params: {},
 		postUrl: null,
 		onFileChange: null,
 		onLoad: null,
@@ -56,6 +57,15 @@ asyncUpload.prototype={
 		this.addAttribute('enctype', 'multipart/form-data');
 		this.addAttribute('encoding', 'multipart/form-data');
 
+        var params = [];
+
+        // Add custom parameters
+        for( var param in o.params ) {
+            params.push(param);
+            var input = $('<input type="hidden" name="'+ param +'" value="'+ o.params[param] +'" />');
+            o.form.append(input);
+        }
+
 		if(o.onLoad !== null) {
 			o.onLoad();
 		}
@@ -71,9 +81,16 @@ asyncUpload.prototype={
 		});
 
 		this.restoreAttributes();
+
+        // Remove custom parameters
+        if(params.length > 0) {
+            for(var i = 0; i < params.length; i++) {
+                $('input[name="'+ params[i] +'"]').remove();
+            }
+        }
 	},
 	addAttribute: function(name, value) {
-		var v=(this.options.form.attr(name)) ? this.options.form.attr(name) : null;
+		var v = (this.options.form.attr(name)) ? this.options.form.attr(name) : null;
 		this.attr.push(new Array(name, v));
 		this.options.form.attr(name, value);
 	},
